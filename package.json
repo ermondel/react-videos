@@ -1,0 +1,19 @@
+{
+  "name": "webpack-simple",
+  "version": "1.0.0",
+  "description": "webpack-simple",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ermondel/webpack-simple.git"
+  },
+  "author": "ermondel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ermondel/webpack-simple/issues"
+  },
+  "homepage": "https://github.com/ermondel/webpack-simple#readme"
+}
