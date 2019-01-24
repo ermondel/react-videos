@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ermondel/webpack-simple/issues"
   },
-  "homepage": "https://github.com/ermondel/webpack-simple#readme"
+  "homepage": "https://github.com/ermondel/webpack-simple#readme",
+  "dependencies": {
+    "webpack": "^4.29.0"
+  }
 }
