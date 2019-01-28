@@ -16,7 +16,10 @@
     "url": "https://github.com/ermondel/webpack-simple/issues"
   },
   "homepage": "https://github.com/ermondel/webpack-simple#readme",
-  "dependencies": {
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-loader": "^8.0.5",
     "webpack": "^4.29.0"
   }
 }
