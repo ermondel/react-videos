@@ -1,13 +1,10 @@
 import axios from 'axios';
 
-const KEY = '';
-
 export default axios.create({
-  baseURL: 'https://www.googleapis.com/youtube/v3',
+  baseURL: 'https://erm-node-api-server.herokuapp.com',
   params: {
     part: 'snippet',
     type: 'video',
-    maxResults: 5,
-    key: `${KEY}`
+    maxResults: 5
   }
 });
