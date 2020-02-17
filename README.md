@@ -6,6 +6,12 @@ _Project for Udemy ReactJS course._
 
 ### About
 
+YouTube video search.
+
+### Usage
+
+[Demo](https://ermondel.github.io/react-videos)
+
 ### Technologies
 
 - React
