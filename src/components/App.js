@@ -5,43 +5,105 @@ import VideoList from '../components/VideoList';
 import VideoDetail from '../components/VideoDetail';
 
 class App extends React.Component {
-  state = { videos: [], selectedVideo: null };
+  state = { videos: [], selectedVideo: null, remoteStatus: 'awaiting', videoLoadStatus: 'none' };
 
   componentDidMount() {
-    this.onTermSubmit('buildings');
+    youtube
+      .get('/')
+      .then((response) => {
+        this.setState({
+          remoteStatus: response.status === 200 ? 'ready' : 'not available'
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          remoteStatus: 'not available'
+        });
+      });
   }
 
-  onTermSubmit = async (term) => {
-    const resposne = await youtube.get('/youtube', {
-      params: {
-        q: term
-      }
+  onTermSubmit = (term) => {
+    this.setState({
+      videoLoadStatus: 'awaiting'
     });
 
-    this.setState({
-      videos: resposne.data.items,
-      selectedVideo: resposne.data.items[0]
-    });
+    youtube
+      .get('/youtube', {
+        params: {
+          q: term
+        }
+      })
+      .then((response) => {
+        this.setState({
+          videos: response.data.items,
+          selectedVideo: response.data.items[0],
+          videoLoadStatus: 'loaded'
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          remoteStatus: 'not available',
+          videoLoadStatus: 'none'
+        });
+      });
   };
 
   onVideoSelect = (video) => {
     this.setState({ selectedVideo: video });
   };
 
-  render() {
+  containerDimmer = () => {
     return (
       <div className="ui container">
+        <div className="ui active transition visible dimmer">
+          <div className="content">
+            <div className="ui indeterminate text loader">Connection to a remote server. Please wait a few seconds.</div>
+          </div>
+        </div>
+        <img src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" className="ui image" alt="dimmer" />
+      </div>
+    );
+  };
+
+  containerNotAvailable = () => {
+    return (
+      <div className="ui segment">
+        <div className="ui message">
+          <div className="header">Server is not available</div>
+          <p>Sorry, the service is currently unavailable. Please come back later.</p>
+        </div>
+      </div>
+    );
+  };
+
+  containerMain = () => {
+    const { videos, selectedVideo, videoLoadStatus } = this.state;
+
+    return (
+      <div>
         <SearchBar onFormSubmit={this.onTermSubmit} />
         <div className="ui grid">
           <div className="ui row">
             <div className="eleven wide column">
-              <VideoDetail video={this.state.selectedVideo} />
+              <VideoDetail video={selectedVideo} status={videoLoadStatus} />
             </div>
             <div className="five wide column">
-              <VideoList onVideoSelect={this.onVideoSelect} videos={this.state.videos} />
+              <VideoList onVideoSelect={this.onVideoSelect} videos={videos} />
             </div>
           </div>
         </div>
+      </div>
+    );
+  };
+
+  render() {
+    const { remoteStatus } = this.state;
+
+    return (
+      <div className="ui container">
+        {remoteStatus === 'awaiting' && this.containerDimmer()}
+        {remoteStatus === 'ready' && this.containerMain()}
+        {remoteStatus === 'not available' && this.containerNotAvailable()}
       </div>
     );
   }
