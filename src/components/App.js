@@ -1,11 +1,20 @@
 import React from 'react';
+import Dimmer from './Dimmer';
+import NotAvailable from './NotAvailable';
 import SearchBar from './SearchBar';
-import youtube from '../apis/youtube';
 import VideoList from '../components/VideoList';
 import VideoDetail from '../components/VideoDetail';
+import Loading from './Loading';
+import youtube from '../api/youtube';
+import './App.css';
 
 class App extends React.Component {
-  state = { videos: [], selectedVideo: null, remoteStatus: 'awaiting', videoLoadStatus: 'none' };
+  state = {
+    videos: [],
+    selectedVideo: null,
+    remoteStatus: 'awaiting',
+    videoLoadStatus: 'none'
+  };
 
   componentDidMount() {
     youtube
@@ -22,7 +31,7 @@ class App extends React.Component {
       });
   }
 
-  onTermSubmit = (term) => {
+  onTermSubmit = (query) => {
     this.setState({
       videoLoadStatus: 'awaiting'
     });
@@ -30,7 +39,7 @@ class App extends React.Component {
     youtube
       .get('/youtube', {
         params: {
-          q: term
+          q: query
         }
       })
       .then((response) => {
@@ -52,58 +61,40 @@ class App extends React.Component {
     this.setState({ selectedVideo: video });
   };
 
-  containerDimmer = () => {
-    return (
-      <div className="ui container">
-        <div className="ui active transition visible dimmer">
-          <div className="content">
-            <div className="ui indeterminate text loader">Connection to a remote server. Please wait a few seconds.</div>
-          </div>
-        </div>
-        <img src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" className="ui image" alt="dimmer" />
-      </div>
-    );
-  };
-
-  containerNotAvailable = () => {
-    return (
-      <div className="ui segment">
-        <div className="ui message">
-          <div className="header">Server is not available</div>
-          <p>Sorry, the service is currently unavailable. Please come back later.</p>
-        </div>
-      </div>
-    );
-  };
-
-  containerMain = () => {
-    const { videos, selectedVideo, videoLoadStatus } = this.state;
-
-    return (
-      <div>
-        <SearchBar onFormSubmit={this.onTermSubmit} />
-        <div className="ui grid">
-          <div className="ui row">
-            <div className="eleven wide column">
-              <VideoDetail video={selectedVideo} status={videoLoadStatus} />
-            </div>
-            <div className="five wide column">
-              <VideoList onVideoSelect={this.onVideoSelect} videos={videos} />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   render() {
-    const { remoteStatus } = this.state;
+    const APP_WAIT = this.state.remoteStatus === 'awaiting';
+    const APP_READY = this.state.remoteStatus === 'ready';
+    const APP_NOT = this.state.remoteStatus === 'not available';
+    const VID_WAIT = this.state.videoLoadStatus === 'awaiting';
+    const VID_READY = this.state.videoLoadStatus === 'loaded';
+    const VID_NONE = this.state.videoLoadStatus === 'none';
 
     return (
-      <div className="ui container">
-        {remoteStatus === 'awaiting' && this.containerDimmer()}
-        {remoteStatus === 'ready' && this.containerMain()}
-        {remoteStatus === 'not available' && this.containerNotAvailable()}
+      <div className="ui container app">
+        {APP_WAIT && <Dimmer />}
+        {APP_READY && (
+          <div>
+            <SearchBar onFormSubmit={this.onTermSubmit} />
+            <div className="ui grid">
+              <div className="ui row">
+                <div className="eleven wide column">
+                  {VID_WAIT && <Loading />}
+                  {VID_READY && (
+                    <VideoDetail video={this.state.selectedVideo} />
+                  )}
+                  {VID_NONE && null}
+                </div>
+                <div className="five wide column">
+                  <VideoList
+                    onVideoSelect={this.onVideoSelect}
+                    videos={this.state.videos}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {APP_NOT && <NotAvailable />}
       </div>
     );
   }

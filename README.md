@@ -16,4 +16,5 @@ YouTube video search.
 
 - React
 - Axios
+- Semantic UI
 - YouTube Data API
