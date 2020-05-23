@@ -13,7 +13,7 @@ class App extends React.Component {
     videos: [],
     selectedVideo: null,
     remoteStatus: 'awaiting',
-    videoLoadStatus: 'none'
+    videoLoadStatus: 'none',
   };
 
   componentDidMount() {
@@ -21,38 +21,34 @@ class App extends React.Component {
       .get('/')
       .then((response) => {
         this.setState({
-          remoteStatus: response.status === 200 ? 'ready' : 'not available'
+          remoteStatus: response.status === 200 ? 'ready' : 'not available',
         });
       })
       .catch((error) => {
-        this.setState({
-          remoteStatus: 'not available'
-        });
+        this.setState({ remoteStatus: 'not available' });
       });
   }
 
   onTermSubmit = (query) => {
     this.setState({
-      videoLoadStatus: 'awaiting'
+      videoLoadStatus: 'awaiting',
     });
 
     youtube
-      .get('/youtube', {
-        params: {
-          q: query
-        }
+      .get('/request/youtube', {
+        params: { q: query },
       })
       .then((response) => {
         this.setState({
           videos: response.data.items,
           selectedVideo: response.data.items[0],
-          videoLoadStatus: 'loaded'
+          videoLoadStatus: 'loaded',
         });
       })
       .catch((error) => {
         this.setState({
           remoteStatus: 'not available',
-          videoLoadStatus: 'none'
+          videoLoadStatus: 'none',
         });
       });
   };
@@ -70,21 +66,21 @@ class App extends React.Component {
     const VID_NONE = this.state.videoLoadStatus === 'none';
 
     return (
-      <div className="ui container app">
+      <div className='ui container app'>
         {APP_WAIT && <Dimmer />}
         {APP_READY && (
           <div>
             <SearchBar onFormSubmit={this.onTermSubmit} />
-            <div className="ui grid">
-              <div className="ui row">
-                <div className="eleven wide column">
+            <div className='ui grid'>
+              <div className='ui row'>
+                <div className='eleven wide column'>
                   {VID_WAIT && <Loading />}
                   {VID_READY && (
                     <VideoDetail video={this.state.selectedVideo} />
                   )}
                   {VID_NONE && null}
                 </div>
-                <div className="five wide column">
+                <div className='five wide column'>
                   <VideoList
                     onVideoSelect={this.onVideoSelect}
                     videos={this.state.videos}
