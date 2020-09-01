@@ -1,99 +1,73 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../api/config';
+import SearchBar from './SearchBar';
+import VideoList from './VideoList';
+import VideoDetail from './VideoDetail';
+import Loading from './Loading';
 import Dimmer from './Dimmer';
 import NotAvailable from './NotAvailable';
-import SearchBar from './SearchBar';
-import VideoList from '../components/VideoList';
-import VideoDetail from '../components/VideoDetail';
-import Loading from './Loading';
-import youtube from '../api/youtube';
-import './App.css';
+import '../style/App.css';
 
-class App extends React.Component {
-  state = {
-    videos: [],
-    selectedVideo: null,
-    remoteStatus: 'awaiting',
-    videoLoadStatus: 'none',
-  };
+const App = () => {
+  const [videos, setVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [status, setStatus] = useState('wait');
 
-  componentDidMount() {
-    youtube
-      .get('/')
-      .then((response) => {
-        this.setState({
-          remoteStatus: response.status === 200 ? 'ready' : 'not available',
-        });
-      })
-      .catch((error) => {
-        this.setState({ remoteStatus: 'not available' });
+  useEffect(() => {
+    const checkAPI = async () => {
+      try {
+        const response = await api.get('/');
+
+        setStatus(response.status === 200 ? 'ready' : 'fault');
+      } catch {
+        setStatus('fault');
+      }
+    };
+
+    checkAPI();
+  }, []);
+
+  const getVideos = async (q) => {
+    try {
+      const response = await api.get('/request/youtube', {
+        params: { q },
       });
-  }
 
-  onTermSubmit = (query) => {
-    this.setState({
-      videoLoadStatus: 'awaiting',
-    });
-
-    youtube
-      .get('/request/youtube', {
-        params: { q: query },
-      })
-      .then((response) => {
-        this.setState({
-          videos: response.data.items,
-          selectedVideo: response.data.items[0],
-          videoLoadStatus: 'loaded',
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          remoteStatus: 'not available',
-          videoLoadStatus: 'none',
-        });
-      });
+      setVideos(response.data.items);
+      setSelectedVideo(response.data.items[0]);
+      setStatus('done');
+    } catch {
+      setStatus('error');
+    }
   };
 
-  onVideoSelect = (video) => {
-    this.setState({ selectedVideo: video });
-  };
-
-  render() {
-    const APP_WAIT = this.state.remoteStatus === 'awaiting';
-    const APP_READY = this.state.remoteStatus === 'ready';
-    const APP_NOT = this.state.remoteStatus === 'not available';
-    const VID_WAIT = this.state.videoLoadStatus === 'awaiting';
-    const VID_READY = this.state.videoLoadStatus === 'loaded';
-    const VID_NONE = this.state.videoLoadStatus === 'none';
-
-    return (
-      <div className='ui container app'>
-        {APP_WAIT && <Dimmer />}
-        {APP_READY && (
-          <div>
-            <SearchBar onFormSubmit={this.onTermSubmit} />
-            <div className='ui grid'>
-              <div className='ui row'>
-                <div className='eleven wide column'>
-                  {VID_WAIT && <Loading />}
-                  {VID_READY && (
-                    <VideoDetail video={this.state.selectedVideo} />
-                  )}
-                  {VID_NONE && null}
-                </div>
-                <div className='five wide column'>
-                  <VideoList
-                    onVideoSelect={this.onVideoSelect}
-                    videos={this.state.videos}
-                  />
-                </div>
+  return (
+    <div className='ui container app'>
+      {status === 'wait' && <Dimmer />}
+      {['fault', 'error'].indexOf(status) >= 0 && <NotAvailable />}
+      {['ready', 'loading', 'done'].indexOf(status) >= 0 && (
+        <div>
+          <SearchBar
+            onFormSubmit={(term) => {
+              setStatus('loading');
+              getVideos(term);
+            }}
+          />
+          <div className='ui grid'>
+            <div className='ui row'>
+              <div className='eleven wide column'>
+                {status === 'loading' && <Loading />}
+                {status === 'done' && <VideoDetail video={selectedVideo} />}
+              </div>
+              <div className='five wide column'>
+                <VideoList onVideoSelect={setSelectedVideo} videos={videos} />
               </div>
             </div>
           </div>
-        )}
-        {APP_NOT && <NotAvailable />}
-      </div>
-    );
-  }
-}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default App;

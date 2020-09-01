@@ -15,6 +15,7 @@ YouTube video search.
 ### Technologies
 
 - React
+- React Hooks
 - Axios
 - Semantic UI
 - YouTube Data API
