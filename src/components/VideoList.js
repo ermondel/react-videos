@@ -8,6 +8,11 @@ const VideoList = (props) => (
         key={video.id.videoId}
         onVideoSelect={props.onVideoSelect}
         video={video}
+        isActive={
+          props.selectedVideo
+            ? props.selectedVideo.id.videoId === video.id.videoId
+            : false
+        }
       />
     ))}
   </div>

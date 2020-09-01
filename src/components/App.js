@@ -60,7 +60,11 @@ const App = () => {
                 {status === 'done' && <VideoDetail video={selectedVideo} />}
               </div>
               <div className='five wide column'>
-                <VideoList onVideoSelect={setSelectedVideo} videos={videos} />
+                <VideoList
+                  onVideoSelect={setSelectedVideo}
+                  videos={videos}
+                  selectedVideo={selectedVideo}
+                />
               </div>
             </div>
           </div>

@@ -1,7 +1,10 @@
 import React from 'react';
 
 const VideoItem = (props) => (
-  <div onClick={() => props.onVideoSelect(props.video)} className='video-item item'>
+  <div
+    onClick={!props.isActive ? () => props.onVideoSelect(props.video) : null}
+    className={`video-item item ${props.isActive ? 'active-video-item' : ''}`}
+  >
     <div className='ui image'>
       <img
         src={props.video.snippet.thumbnails.medium.url}
