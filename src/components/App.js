@@ -5,7 +5,7 @@ import VideoList from './VideoList';
 import VideoDetail from './VideoDetail';
 import Loading from './Loading';
 import Dimmer from './Dimmer';
-import NotAvailable from './NotAvailable';
+import ErrorMessage from './ErrorMessage';
 import '../style/App.css';
 
 const App = () => {
@@ -44,7 +44,7 @@ const App = () => {
   return (
     <div className='ui container app'>
       {status === 'wait' && <Dimmer />}
-      {['fault', 'error'].indexOf(status) >= 0 && <NotAvailable />}
+      {['fault', 'error'].indexOf(status) >= 0 && <ErrorMessage />}
       {['ready', 'loading', 'done'].indexOf(status) >= 0 && (
         <div>
           <SearchBar

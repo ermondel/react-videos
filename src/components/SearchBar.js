@@ -11,13 +11,14 @@ const SearchBar = (props) => {
   return (
     <div className='search-bar ui segment'>
       <form className='ui form' onSubmit={onSubmit}>
-        <div className='field'>
-          <label>Video Search</label>
+        <div className='ui fluid action input'>
           <input
             type='text'
-            onChange={(event) => setTerm(event.target.value)}
+            placeholder='Video search'
             value={term}
+            onChange={(event) => setTerm(event.target.value)}
           />
+          <button className='ui blue button'>Search</button>
         </div>
       </form>
     </div>
