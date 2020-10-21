@@ -12,10 +12,12 @@ YouTube video search.
 
 [Demo](https://ermondel.github.io/react-videos)
 
-### Technologies
+[![React Videos](https://github.com/ermondel/wiki/blob/master/screens/react-videos-app.jpg)](https://ermondel.github.io/react-videos)
 
-- React
-- React Hooks
-- Axios
-- Semantic UI
-- YouTube Data API
+| Technologies     |
+| ---------------- |
+| React            |
+| React Hooks      |
+| Axios            |
+| Semantic UI      |
+| YouTube Data API |
