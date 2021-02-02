@@ -1,5 +1,12 @@
+html {
+  position: relative;
+  min-height: 100%;
+  height: auto;
+}
+
 .app {
   padding-top: 15px;
+  padding-bottom: 40px;
 }
 
 .video-item {
@@ -11,7 +18,7 @@
 }
 
 .video-item:hover {
-  border-right-color: lime;
+  border-right-color: orange;
 }
 
 .video-item.item img {
@@ -20,5 +27,9 @@
 
 .active-video-item {
   cursor: default;
-  border-right-color: lime;
+  border-right-color: #2185d0;
+}
+
+.active-video-item:hover {
+  border-right-color: #2185d0;
 }
