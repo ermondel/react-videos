@@ -14,10 +14,10 @@ YouTube video search.
 
 [![React Videos](https://github.com/ermondel/wiki/blob/master/screens/react-videos-app.jpg)](https://ermondel.github.io/react-videos)
 
-| Technologies     |
-| ---------------- |
-| React            |
-| React Hooks      |
-| Axios            |
-| Semantic UI      |
-| YouTube Data API |
+### Technologies
+
+- [React](https://reactjs.org)
+- [React Hooks](https://reactjs.org/docs/hooks-intro.html)
+- [Axios](https://www.npmjs.com/package/axios)
+- [Semantic UI](https://semantic-ui.com)
+- [YouTube Data API](https://developers.google.com/youtube/v3)
